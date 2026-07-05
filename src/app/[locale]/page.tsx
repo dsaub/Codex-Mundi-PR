@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { getDictionary, getNestedValue } from '@/lib/i18n/dictionary'
 import type { Locale } from '@/lib/i18n/config'
@@ -30,7 +30,12 @@ export default function HomePage() {
   const params = useParams()
   const router = useRouter()
   const locale = (params.locale as Locale) || 'es'
-  const [phase, setPhase] = useState<Phase>('splash')
+  const [phase, setPhase] = useState<Phase>(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('codex_intro_done')) {
+      return 'library'
+    }
+    return 'splash'
+  })
   const dict = getDictionary(locale)
   const t = (path: string) => dict ? getNestedValue(dict, path) : path
 
@@ -58,7 +63,10 @@ export default function HomePage() {
   }
 
   if (phase === 'disclaimer') {
-    return <DisclaimerModal onAccept={() => setPhase('library')} locale={locale} dict={dict} />
+    return <DisclaimerModal onAccept={() => {
+      localStorage.setItem('codex_intro_done', 'true')
+      setPhase('library')
+    }} locale={locale} dict={dict} />
   }
 
   return (
