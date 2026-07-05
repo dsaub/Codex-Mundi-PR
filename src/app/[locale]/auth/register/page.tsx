@@ -2,81 +2,56 @@
 
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Desktop } from '@/components/retro/Desktop'
-import { Taskbar } from '@/components/retro/Taskbar'
-import { XpWindow, XpWindowBody } from '@/components/retro/XpWindow'
-import { XpButton } from '@/components/retro/XpButton'
 import { getDictionary, getNestedValue } from '@/lib/i18n/dictionary'
 import type { Locale } from '@/lib/i18n/config'
+import Header from '@/app/[locale]/Header'
+import Sidebar from '@/app/[locale]/Sidebar'
 
 export default function RegisterPage() {
   const params = useParams()
   const router = useRouter()
   const locale = (params.locale as Locale) || 'es'
   const dict = getDictionary(locale)
+  const t = (path: string) => dict ? getNestedValue(dict, path) : path
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
 
-  const t = (path: string) => dict ? getNestedValue(dict, path) : path
-
   return (
-    <div className="flex flex-col h-full">
-      <Desktop>
-        <div className="absolute inset-4 bottom-10 z-20 flex justify-center items-start pt-8">
-          <XpWindow
-            title={`🔐 ${t('auth.registerTitle')}`}
-            defaultWidth="380px"
-            defaultHeight="auto"
-            maximizable={false}
-          >
-            <XpWindowBody>
-              <div className="flex flex-col gap-3">
-                <div>
-                  <label className="text-xs block mb-1">{t('auth.username')}</label>
-                  <input
-                    type="text"
-                    className="xp-input w-full"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs block mb-1">{t('auth.email')}</label>
-                  <input
-                    type="email"
-                    className="xp-input w-full"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs block mb-1">{t('auth.password')}</label>
-                  <input
-                    type="password"
-                    className="xp-input w-full"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <XpButton variant="primary" className="w-full mt-2">
-                  {t('auth.submitRegister')}
-                </XpButton>
-                <p className="text-xs text-center text-gray-600 mt-2">
-                  {t('auth.hasAccount')}{' '}
-                  <span
-                    className="xp-link"
-                    onClick={() => router.push(`/${locale}/auth/login`)}
-                  >
-                    {t('auth.loginLink')}
-                  </span>
-                </p>
+    <>
+      <Header locale={locale} router={router} t={t} />
+      <div className="cm-body">
+        <Sidebar locale={locale} router={router} t={t} />
+        <main className="cm-main">
+          <div className="cm-content-box" style={{ maxWidth: 400, margin: '0 auto' }}>
+            <h1>🔐 {t('auth.registerTitle')}</h1>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-sm block mb-1">{t('auth.username')}</label>
+                <input type="text" className="cm-input w-full" value={username}
+                  onChange={(e) => setUsername(e.target.value)} />
               </div>
-            </XpWindowBody>
-          </XpWindow>
-        </div>
-      </Desktop>
-      <Taskbar locale={locale} />
-    </div>
+              <div>
+                <label className="text-sm block mb-1">{t('auth.email')}</label>
+                <input type="email" className="cm-input w-full" value={email}
+                  onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-sm block mb-1">{t('auth.password')}</label>
+                <input type="password" className="cm-input w-full" value={password}
+                  onChange={(e) => setPassword(e.target.value)} />
+              </div>
+              <button className="cm-btn cm-btn-primary w-full">{t('auth.submitRegister')}</button>
+              <p className="text-sm text-center text-gray-600">
+                {t('auth.hasAccount')}{' '}
+                <a className="cm-link" onClick={() => router.push(`/${locale}/auth/login`)}>
+                  {t('auth.loginLink')}
+                </a>
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </>
   )
 }

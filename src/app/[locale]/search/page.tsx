@@ -2,14 +2,12 @@
 
 import { Suspense, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { Desktop } from '@/components/retro/Desktop'
-import { Taskbar } from '@/components/retro/Taskbar'
-import { XpWindow, XpWindowBody, XpWindowStatusBar } from '@/components/retro/XpWindow'
-import { XpButton } from '@/components/retro/XpButton'
 import { getDictionary, getNestedValue } from '@/lib/i18n/dictionary'
 import type { Locale } from '@/lib/i18n/config'
 import { seedData } from '@/lib/seed'
 import { truncate } from '@/lib/utils'
+import Sidebar from '../Sidebar'
+import Header from '../Header'
 
 function SearchContent() {
   const params = useParams()
@@ -18,39 +16,34 @@ function SearchContent() {
   const locale = (params.locale as Locale) || 'es'
   const query = searchParams.get('q') || ''
   const dict = getDictionary(locale)
-  const [searchText, setSearchText] = useState(query)
-
   const t = (path: string) => dict ? getNestedValue(dict, path) : path
+  const [searchText, setSearchText] = useState(query)
 
   const results = query
     ? seedData.entries.filter((entry) => {
-        const titleEs = entry.title_es.toLowerCase()
-        const titleEn = entry.title_en.toLowerCase()
-        const contentEs = entry.content_es.toLowerCase()
-        const contentEn = entry.content_en.toLowerCase()
         const q = query.toLowerCase()
         return (
-          titleEs.includes(q) ||
-          titleEn.includes(q) ||
-          contentEs.includes(q) ||
-          contentEn.includes(q)
+          entry.title_es.toLowerCase().includes(q) ||
+          entry.title_en.toLowerCase().includes(q) ||
+          entry.content_es.toLowerCase().includes(q) ||
+          entry.content_en.toLowerCase().includes(q)
         )
       })
     : []
 
   return (
-    <Desktop>
-      <div className="absolute inset-4 bottom-10 z-20 flex justify-center items-start pt-4">
-        <XpWindow
-          title={`🔍 ${t('search.title')}`}
-          defaultWidth="600px"
-          defaultHeight="450px"
-        >
-          <XpWindowBody>
-            <div className="flex gap-2 mb-4">
+    <>
+      <Header locale={locale} router={router} t={t} />
+      <div className="cm-body">
+        <Sidebar locale={locale} router={router} t={t} />
+        <main className="cm-main">
+          <div className="cm-content-box">
+            <h1>{t('search.title')}</h1>
+
+            <div className="cm-search-bar mb-6">
               <input
                 type="text"
-                className="xp-input flex-1"
+                className="cm-input flex-1"
                 placeholder={t('search.placeholder')}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
@@ -60,8 +53,8 @@ function SearchContent() {
                   }
                 }}
               />
-              <XpButton
-                variant="primary"
+              <button
+                className="cm-btn cm-btn-primary"
                 onClick={() => {
                   if (searchText.trim()) {
                     router.push(`/${locale}/search?q=${encodeURIComponent(searchText.trim())}`)
@@ -69,68 +62,56 @@ function SearchContent() {
                 }}
               >
                 {t('search.title')}
-              </XpButton>
+              </button>
             </div>
 
             {query && (
-              <p className="text-xs text-gray-600 mb-3">
+              <p className="text-sm text-gray-600 mb-4">
                 {t('search.resultsFor')} &ldquo;{query}&rdquo;: {results.length} {t('home.totalEntries')}
               </p>
             )}
 
             {query && results.length === 0 && (
-              <p className="text-sm text-gray-500 italic">- {t('search.noResults')} -</p>
+              <p className="italic text-gray-500">- {t('search.noResults')} -</p>
             )}
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {results.map((entry) => {
                 const title = locale === 'es' ? entry.title_es : entry.title_en
                 const excerpt = locale === 'es' ? entry.excerpt_es : entry.excerpt_en
+                const cat = seedData.categories.find(c => c.id === entry.categoryId)
                 return (
                   <div
                     key={entry.id}
-                    className="border border-[var(--color-xp-silver-dark)] p-2 
-                              cursor-pointer hover:bg-blue-50"
+                    className="cm-card"
                     onClick={() => router.push(`/${locale}/entry/${entry.slug}`)}
                   >
-                    <div className="font-bold text-sm">{title}</div>
-                    {excerpt && (
-                      <div className="text-xs text-gray-600 mt-1">{truncate(excerpt, 150)}</div>
-                    )}
+                    <div className="cm-card-title">{title}</div>
+                    <div className="cm-card-excerpt">{truncate(excerpt, 200)}</div>
+                    <div className="cm-meta mt-2">
+                      <span className="cm-tag">{getNestedValue(dict, `reality.${entry.realityStatus}`)}</span>
+                      {cat && (
+                        <span className="ml-2">{locale === 'es' ? cat.name_es : cat.name_en}</span>
+                      )}
+                    </div>
                   </div>
                 )
               })}
             </div>
-
-            <button
-              className="xp-button mt-4"
-              onClick={() => router.push(`/${locale}`)}
-            >
-              ← {t('common.back')}
-            </button>
-          </XpWindowBody>
-        </XpWindow>
+          </div>
+          <div className="cm-footer">
+            {t('site.title')} &mdash; {t('search.title')}
+          </div>
+        </main>
       </div>
-    </Desktop>
+    </>
   )
 }
 
 export default function SearchPage() {
-  const params = useParams()
-  const locale = (params.locale as Locale) || 'es'
-
   return (
-    <div className="flex flex-col h-full">
-      <Suspense fallback={
-        <Desktop>
-          <div className="flex items-center justify-center h-full text-white text-sm">
-            Loading...
-          </div>
-        </Desktop>
-      }>
-        <SearchContent />
-      </Suspense>
-      <Taskbar locale={locale} />
-    </div>
+    <Suspense fallback={<div className="cm-body"><main className="cm-main">Loading...</main></div>}>
+      <SearchContent />
+    </Suspense>
   )
 }

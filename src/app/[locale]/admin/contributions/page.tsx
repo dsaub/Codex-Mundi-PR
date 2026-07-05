@@ -1,46 +1,38 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import { Desktop } from '@/components/retro/Desktop'
-import { Taskbar } from '@/components/retro/Taskbar'
-import { XpWindow, XpWindowBody, XpWindowStatusBar } from '@/components/retro/XpWindow'
 import { getDictionary, getNestedValue } from '@/lib/i18n/dictionary'
 import type { Locale } from '@/lib/i18n/config'
+import Header from '@/app/[locale]/Header'
+import Sidebar from '@/app/[locale]/Sidebar'
 
 export default function AdminContributionsPage() {
   const params = useParams()
   const router = useRouter()
   const locale = (params.locale as Locale) || 'es'
   const dict = getDictionary(locale)
-
   const t = (path: string) => dict ? getNestedValue(dict, path) : path
 
   return (
-    <div className="flex flex-col h-full">
-      <Desktop>
-        <div className="absolute inset-4 bottom-10 z-20 flex justify-center items-start pt-4">
-          <XpWindow
-            title={`💬 ${t('admin.manageContributions')}`}
-            defaultWidth="600px"
-            defaultHeight="350px"
-          >
-            <XpWindowBody>
-              <p className="text-xs text-gray-600 mb-4 italic">
-                {locale === 'es'
-                  ? 'No hay contribuciones pendientes por revisar.'
-                  : 'No pending contributions to review.'}
-              </p>
-              <button className="xp-button" onClick={() => router.push(`/${locale}/admin`)}>
-                ← {t('common.back')}
-              </button>
-            </XpWindowBody>
-            <XpWindowStatusBar>
-              <span>{t('admin.pendingContributions')}: 0</span>
-            </XpWindowStatusBar>
-          </XpWindow>
-        </div>
-      </Desktop>
-      <Taskbar locale={locale} />
-    </div>
+    <>
+      <Header locale={locale} router={router} t={t} />
+      <div className="cm-body">
+        <Sidebar locale={locale} router={router} t={t} />
+        <main className="cm-main">
+          <div className="cm-content-box">
+            <h1>💬 {t('admin.manageContributions')}</h1>
+            <p className="italic text-gray-500">
+              {locale === 'es'
+                ? 'No hay contribuciones pendientes por revisar.'
+                : 'No pending contributions to review.'}
+            </p>
+            <p className="cm-meta mt-2">{t('admin.pendingContributions')}: 0</p>
+            <button className="cm-btn mt-4" onClick={() => router.push(`/${locale}/admin`)}>
+              ← {t('common.back')}
+            </button>
+          </div>
+        </main>
+      </div>
+    </>
   )
 }
