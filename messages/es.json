@@ -3,7 +3,17 @@
     "title": "Codex Mundi",
     "subtitle": "La Biblioteca de Alejandría del Conocimiento Humano",
     "description": "Un compendio de todo el conocimiento humano, real y especulativo",
-    "disclaimer": "Nada de lo aquí escrito debe tomarse como verdad absoluta. Este archivo del conocimiento humano recopila información de múltiples fuentes, incluyendo teorías, hipótesis, mitos, leyendas y especulaciones. Todo está abierto a mejora, contraste y corrección. El conocimiento es un organismo vivo que evoluciona con cada contribución."
+    "disclaimer": "Nada de lo aquí escrito debe tomarse como verdad absoluta. Este archivo del conocimiento humano recopila información de múltiples fuentes, incluyendo teorías, hipótesis, mitos, leyendas y especulaciones. Todo está abierto a mejora, contraste y corrección. El conocimiento es un organismo vivo que evoluciona con cada contribución.",
+    "splashPhrases": [
+      "Antes de que existieran los libros, existía la palabra. Antes de la palabra, existió la idea.",
+      "Todo el conocimiento del mundo, en un solo lugar.",
+      "La Biblioteca de Alejandría renace en píxeles.",
+      "Lo real y lo imaginario, lo cierto y lo dudoso, todo tiene cabida aquí.",
+      "Un archivo de todo lo que fue, es, podría ser o nunca fue.",
+      "El conocimiento no es verdad, es pregunta."
+    ],
+    "splashSubtitle": "Haz clic para entrar al archivo del conocimiento",
+    "enter": "Entrar a Codex Mundi"
   },
   "nav": {
     "home": "Inicio",

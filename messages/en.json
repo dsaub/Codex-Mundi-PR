@@ -3,7 +3,17 @@
     "title": "Codex Mundi",
     "subtitle": "The Library of Alexandria of Human Knowledge",
     "description": "A compendium of all human knowledge, real and speculative",
-    "disclaimer": "Nothing written here should be taken as absolute truth. This archive of human knowledge compiles information from multiple sources, including theories, hypotheses, myths, legends, and speculations. Everything is open to improvement, contrast, and correction. Knowledge is a living organism that evolves with every contribution."
+    "disclaimer": "Nothing written here should be taken as absolute truth. This archive of human knowledge compiles information from multiple sources, including theories, hypotheses, myths, legends, and speculations. Everything is open to improvement, contrast, and correction. Knowledge is a living organism that evolves with every contribution.",
+    "splashPhrases": [
+      "Before books existed, there was the word. Before the word, there was the idea.",
+      "All the knowledge of the world, in one place.",
+      "The Library of Alexandria reborn in pixels.",
+      "The real and the imaginary, the certain and the doubtful, all have a place here.",
+      "An archive of all that was, is, could be, or never was.",
+      "Knowledge is not truth, it is question."
+    ],
+    "splashSubtitle": "Click to enter the knowledge archive",
+    "enter": "Enter Codex Mundi"
   },
   "nav": {
     "home": "Home",
